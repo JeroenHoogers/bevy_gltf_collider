@@ -77,8 +77,10 @@ pub(super) fn process_mesh_collider(
 
     let collider = children.iter().find_map(|&child| {
         if let Some(mesh) = world.get::<Handle<Mesh>>(child) {
-            let mesh = meshes.remove(mesh).unwrap();
-
+            let mesh = meshes.get(mesh).unwrap();
+            // FIXME: do not re-generate collider when we have encountered this exact same mesh before, in the case of instancing.
+            // FIXME: mesh is no longer removed since we need the mesh again to support gltf instancing. The code used to be:
+            // let mesh = meshes.remove(mesh).unwrap();
             Some(get_collider_from_mesh(&mesh))
         } else {
             None

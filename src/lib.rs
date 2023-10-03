@@ -115,6 +115,7 @@ pub fn extract_insert_scene_colliders(
 
 fn hydrate_serialized_colliders(
     colliders_to_add: Query<(&SerializedCollider, Entity), Added<SerializedCollider>>,
+    mut transforms: Query<&mut Transform>,
     mut cmds: Commands,
 ) {
     colliders_to_add.iter().for_each(|(collider_to_add, entity)|{
@@ -129,6 +130,11 @@ fn hydrate_serialized_colliders(
         };
 
         entcmds.insert(collider);
+
+        // the transform's scale is not applied to the collider unless we do this...
+        if let Ok(mut transform) = transforms.get_mut(entity) {
+            transform.scale = transform.scale;
+        }
     });
 }
 
