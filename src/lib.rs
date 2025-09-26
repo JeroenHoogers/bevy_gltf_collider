@@ -59,7 +59,7 @@ pub fn get_scene_colliders(
     }
 
     for e in entities_to_despawn {
-        despawn_with_children_recursive(world, e);
+        world.despawn(e);
     }
 
     Ok(result)
@@ -88,7 +88,7 @@ pub fn extract_insert_scene_colliders(
     }
 
     for e in entities_to_despawn {
-        despawn_with_children_recursive(world, e);
+        world.despawn(e);
     }
 
     //Go over all the found colliders and see if we can find an entity with a matching name
@@ -124,7 +124,7 @@ fn hydrate_serialized_colliders(
             return;
         };
 
-        let Some(mut entcmds) = cmds.get_entity(entity) else{
+        let Ok(mut entcmds) = cmds.get_entity(entity) else{
             warn!("Could not find entity to attach Deserialized Collider to!");
             return;
         };

@@ -54,7 +54,9 @@ pub fn get_collider_from_mesh(mesh: &Mesh) -> Result<Collider, ColliderFromMeshE
         .map(|v| Vec3::new(v[0], v[1], v[2]))
         .collect();
 
-    let collider = Collider::trimesh(vertices, triple_indices);
+    let Ok(collider) = Collider::trimesh(vertices, triple_indices) else {
+        return Err(ColliderFromMeshError::InvalidIndicesCount(indices.len()));
+    };
 
     Ok(collider)
 }
@@ -75,8 +77,8 @@ pub(super) fn process_mesh_collider(
         return Some(Err(ColliderMeshParsingError::MissingMeshNode));
     };
 
-    let collider = children.iter().find_map(|&child| {
-        if let Some(mesh) = world.get::<Handle<Mesh>>(child) {
+    let collider = children.iter().find_map(|child| {
+        if let Some(mesh) = world.get::<Mesh3d>(child) {
             let mesh = meshes.get(mesh).unwrap();
             // FIXME: do not re-generate collider when we have encountered this exact same mesh before, in the case of instancing.
             // FIXME: mesh is no longer removed since we need the mesh again to support gltf instancing. The code used to be:
