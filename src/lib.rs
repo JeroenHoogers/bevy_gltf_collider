@@ -130,11 +130,6 @@ fn hydrate_serialized_colliders(
         };
 
         entcmds.insert(collider);
-
-        // the transform's scale is not applied to the collider unless we do this...
-        if let Ok(mut transform) = transforms.get_mut(entity) {
-            transform.scale = transform.scale;
-        }
     });
 }
 
